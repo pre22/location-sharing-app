@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Notification
 
-# Register your models here.
+# 👇 2. Add this line to add the notification
+admin.site.register(Notification)
