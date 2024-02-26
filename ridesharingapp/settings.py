@@ -36,12 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
 
     'locations.apps.LocationsConfig',
     'users.apps.UsersConfig',
+    'notifications.apps.NotificationsConfig',
 
-    'daphne',
 ]
 
 
@@ -76,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ridesharingapp.wsgi.application'
+# WSGI_APPLICATION = 'ridesharingapp.wsgi.application'
 
 
 ASGI_APPLICATION = 'ridesharingapp.asgi.application'
