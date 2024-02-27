@@ -60,6 +60,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         except (TokenError, InvalidToken):
             await self.close()
         except Exception as e:
+            print(e)
             await self.close()
 
     async def disconnect(self, code):
@@ -98,7 +99,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def mark_notification_as_delivered(self, notification_id):
         '''Updates the delivered status of a Notification Instance True'''
-        Notification.objects.filter(id=notification_id).update(delivered=True)
+        print(notification_id)
+        instance = Notification.objects.get(id=notification_id)
+        instance.delivered = True
+        instance.save()
 
     @database_sync_to_async
     def get_user(self, access_token):
