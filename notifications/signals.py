@@ -9,9 +9,11 @@ def notification_created(sender, instance, created, **kwargs):
     if created:
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            'public_room',
+            f'{instance.user.id}_notificaton',
             {
+                "id": instance.id,
                 "type": "send_notification",
-                "message": instance.message
+                "message": instance.message,
+                "recipient": instance.user.email
             }
         )
