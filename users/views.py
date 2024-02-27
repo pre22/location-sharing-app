@@ -14,7 +14,7 @@ from . import serializers
 # Create your views here.
 class UserLoginView(APIView):
     '''User Login View'''
-    permission_classes = (permissions.AllowAny)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = serializers.UserLoginSerializer(data=request.data)
@@ -23,8 +23,8 @@ class UserLoginView(APIView):
 
             try:
 
-                user = CustomUser.objects.get(phone=data["email"])
-                check = user.check_password(data['password'])
+                user = CustomUser.objects.get(email=data["email"])
+                check = user.check_password(data["password"])
 
                 if check == True:
                     refresh_token = RefreshToken.for_user(user)
@@ -37,7 +37,7 @@ class UserLoginView(APIView):
 
                     return Response(response_data, status=status.HTTP_200_OK)
                 else:
-                    return Response({'error': 'phone or password incorrect'}, status=status.HTTP_401_UNAUTHORIZED)
+                    return Response({'error': 'email or password incorrect'}, status=status.HTTP_401_UNAUTHORIZED)
 
             except CustomUser.DoesNotExist:
                 return Response(
@@ -50,7 +50,7 @@ class UserLoginView(APIView):
 
 class UserSignUpView(APIView):
     '''User Signup View'''
-    permission_classes = (permissions.AllowAny)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = serializers.UserRegistrationSerializer(data=request.data)
@@ -67,7 +67,9 @@ class UserSignUpView(APIView):
                     return Response(response, status=status.HTTP_200_OK)
                     
             except CustomUser.DoesNotExist:
-                user = CustomUser.objects.create(email=data['email'], phone='234')
+                user = CustomUser.objects.create(email=data['email'])
+                user.username = data['email'][:5]
+                user.set_password(data['password'])
                 user.is_active = True
                 user.save()
 
