@@ -19,6 +19,14 @@ services:
       - postgres_data:/var/lib/postgresql/data/ 
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
 
 volumes:
   postgres_data:
