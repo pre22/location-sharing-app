@@ -11,6 +11,7 @@ from .models import Notification
 
 User = get_user_model()
 
+
 # Preferrable for MVT, MVC Web applications 
 class NotificationConsumers(AsyncWebsocketConsumer):
     async def connect(self):
@@ -60,18 +61,19 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         except (TokenError, InvalidToken):
             await self.close()
         except Exception as e:
-            print(e)
             await self.close()
 
     async def disconnect(self, code):
         '''Discard Group and Channel when Client disconnects'''
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name
+            )
 
     async def send_notification(self, event):
         '''Sends the Nofitications to the Client'''
+
         if self.user.email == event['recipient']:
             await self.send(text_data=json.dumps({ 'message': event['message'] }))
             await self.mark_notification_as_delivered(event['id'])
@@ -95,14 +97,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         '''Return a list of Notification Instances where delivered status == False'''
         pending_list = list(Notification.objects.filter(user=self.user, delivered=False).values('id', 'message', 'user__email'))
         return pending_list
-
+    
+    
     @database_sync_to_async
     def mark_notification_as_delivered(self, notification_id):
         '''Updates the delivered status of a Notification Instance True'''
-        print(notification_id)
+       
         instance = Notification.objects.get(id=notification_id)
         instance.delivered = True
         instance.save()
+        return instance
+        
 
     @database_sync_to_async
     def get_user(self, access_token):
@@ -112,6 +117,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         user = User.objects.get(id=user_id)
         return user
     
+
 
 
     
