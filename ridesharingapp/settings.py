@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'locations.apps.LocationsConfig',
     'users.apps.UsersConfig',
     'notifications.apps.NotificationsConfig',
+    'pwebsockets.apps.PwebsocketsConfig',
 
 ]
 
