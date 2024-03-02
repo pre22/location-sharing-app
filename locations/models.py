@@ -18,5 +18,5 @@ class ShareLocationRequestModel(BaseModel):
     status = models.CharField(choices=STATUS, max_length=50)
 
     def __str__(self):
-        return self.id
+        return f'{self.id}'
 
