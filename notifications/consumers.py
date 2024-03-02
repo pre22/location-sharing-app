@@ -44,7 +44,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             # Get Header 
             headers = dict(self.scope['headers'])
             # Check for token 
-            token = headers.get(b'token').decode('utf-8')
+            token = headers.get(b'token')
             # Get User making handshake
             self.user = await self.get_user(token)
 
@@ -113,7 +113,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_user(self, access_token):
         '''Accepts JWT Refresh Token and returns the user instance'''
         access_token_obj = AccessToken(access_token)
-        user_id = access_token_obj['user_id'] 
+        user_id = access_token_obj['user_id']
         user = User.objects.get(id=user_id)
         return user
     
