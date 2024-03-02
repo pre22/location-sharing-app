@@ -10,23 +10,43 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
-    depends_on:
-      - db
+    
+    # depends_on:
+    #   - db
 
-  db:
-    image: postgres:13
+  redis:
+    image: redis:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data/ 
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - redis-data:/data
+    restart: always
+
+  # db:
+  #   image: postgres:13
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/ 
+  #   environment:
+  #     - DB_ENGINE=${DB_ENGINE}
+  #     - POSTGRES_DB=${DB_NAME}
+  #     - POSTGRES_USER=${DB_USER}
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #     - POSTGRES_HOST=${DB_HOST}
+  #     - POSTGRES_PORT=${DB_PORT}
   
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      # PGADMIN_LISTEN_ADDRESS: ${DB_LISTEN_ADDRESS}
+      # PGADMIN_LISTEN_PORT: ${PGADMIN_PORT}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5050:80"
 
 volumes:
-  postgres_data:
+  redis-data:
+  # postgres_data:
